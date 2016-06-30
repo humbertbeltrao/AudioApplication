@@ -8,9 +8,14 @@ import android.media.MediaRecorder;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Humberto on 25/06/2016.
@@ -21,6 +26,7 @@ public class AudioService extends Service {
     private MediaRecorder mediaRecorder;
     private int mStartID;
     private String outputFile = null;
+    String[] listItem = {};
 
     @Override
     public  void onCreate(){
@@ -33,6 +39,7 @@ public class AudioService extends Service {
         final PendingIntent pendingIntent = PendingIntent.getActivity(this, 0,
                 notificationIntent, 0);
 
+
         final Notification notification = new Notification.Builder(
                 getApplicationContext())
                 //.setSmallIcon(android.R.drawable.ic_media_play)
@@ -44,14 +51,18 @@ public class AudioService extends Service {
         // readily be killed by the system
         startForeground(NOTIFICATION_ID, notification);
 
+
+
     }
+
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        Toast.makeText(getApplicationContext(), "Speak now", Toast.LENGTH_LONG).show();
-
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
+        Toast.makeText(getApplicationContext(), "Speak now", Toast.LENGTH_SHORT).show();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+(simpleDateFormat.format(new Date())).toString()+".3gp";
+        Toast.makeText(getApplicationContext(), outputFile, Toast.LENGTH_SHORT).show();
         mediaRecorder = new MediaRecorder();
         mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
         mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
@@ -60,6 +71,8 @@ public class AudioService extends Service {
         try {
             mediaRecorder.prepare();
             mediaRecorder.start();
+            Toast.makeText(getApplicationContext(), outputFile, Toast.LENGTH_SHORT).show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -72,6 +85,7 @@ public class AudioService extends Service {
         if (null != mediaRecorder){
             mediaRecorder.stop();
             mediaRecorder.release();
+
         }
     }
 

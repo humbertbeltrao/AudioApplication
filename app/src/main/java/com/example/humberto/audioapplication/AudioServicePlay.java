@@ -11,6 +11,8 @@ import android.os.IBinder;
 import android.widget.Toast;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by Humberto on 25/06/2016.
@@ -23,9 +25,8 @@ public class AudioServicePlay extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-
-        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/recording.3gp";
-
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy-hh-mm-ss");
+        outputFile = Environment.getExternalStorageDirectory().getAbsolutePath() + "/"+(simpleDateFormat.format(new Date())).toString()+".3gp";
 
         final Intent notificationIntent = new Intent(getApplicationContext(),
                 AudioActivity.class);
