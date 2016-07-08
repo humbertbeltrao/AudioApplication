@@ -2,6 +2,7 @@ package com.example.humberto.audioapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.media.MediaRecorder;
 
@@ -13,27 +14,37 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.audiocapture.R;
 import com.example.humberto.audioapplication.AudioActivity;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class AudioActivity extends Activity {
+    private File root;
+    private ArrayList<File> fileList = new ArrayList<>();
+    private LinearLayout view;
+    private TextView textView;
+    Button play,stop, record;
 
-    Button play,stop,record;
-//    private MediaRecorder myAudioRecorder;
- //   private String outputFile = null;
-  //  public int currentAmplitude;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_audio);
+
+        getFiles();
 
         final Intent recordServiceIntent = new Intent(
                 getApplicationContext(),
@@ -100,7 +111,13 @@ public class AudioActivity extends Activity {
 //
 //                Toast.makeText(getApplicationContext(), "Audio recorded successfully",Toast.LENGTH_LONG).show();
                 stopService(recordServiceIntent);
+                Toast.makeText(getApplicationContext(), "Stop pressed",Toast.LENGTH_LONG).show();
+               // view.removeAllViews();
+                getFiles();
                 play.setEnabled(true);
+
+
+
             }
         });
 
@@ -134,8 +151,49 @@ public class AudioActivity extends Activity {
             }
         });
 
+    }//close onCreate method
+
+    public void getFiles() {
+        view = (LinearLayout) findViewById(R.id.view);
+
+        //getting SDcard root path
+        root = new File(Environment.getExternalStorageDirectory()
+                .getAbsolutePath());
+        getFile(root);
+        textView = new TextView(this);
+        for (int i = 0; i < fileList.size(); i++) {
+
+            if(fileList.size() >= 1) {
+                textView.setText(fileList.get(fileList.size()-1).getName());
+            } else {
+                textView.setText(fileList.get(i).getName());
+            }
+
+            textView.setPadding(5, 5, 5, 5);
+
+            System.out.println(fileList.get(i).getName());
+
+//            if (fileList.get(i).isDirectory()) {
+//                textView.setTextColor(Color.parseColor("#FF0000"));
+//            }
+
+        }
+        view.addView(textView);
+    }
+    public ArrayList<File> getFile(File dir) {
+        File listFile[] = dir.listFiles();
+        if (listFile != null && listFile.length > 0) {
+            for (int i = 0; i < listFile.length; i++) {
 
 
+                    if (listFile[i].getName().endsWith(".3gp")) {
+                        fileList.add(listFile[i]);
+                    }
+
+
+            }
+        }
+        return fileList;
     }
 
 

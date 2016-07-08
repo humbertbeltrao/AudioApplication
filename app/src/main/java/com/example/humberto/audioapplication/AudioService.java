@@ -1,5 +1,6 @@
 package com.example.humberto.audioapplication;
 
+import android.app.Activity;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -9,7 +10,11 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
+
+import com.example.audiocapture.R;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -24,13 +29,12 @@ public class AudioService extends Service {
 
     private static final int NOTIFICATION_ID = 1;
     private MediaRecorder mediaRecorder;
-    private int mStartID;
     private String outputFile = null;
-    String[] listItem = {};
 
     @Override
     public  void onCreate(){
         super.onCreate();
+
 
 
 
@@ -85,6 +89,7 @@ public class AudioService extends Service {
         if (null != mediaRecorder){
             mediaRecorder.stop();
             mediaRecorder.release();
+
 
         }
     }
